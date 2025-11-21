@@ -2,11 +2,20 @@
 #include "Arduino.h"
 #include "Client.h"
 
+// Ethernet link status constants
+enum EthernetLinkStatus {
+    Unknown,
+    LinkON,
+    LinkOFF
+};
+
 class EthernetClass {
 public:
     void begin(uint8_t* mac, IPAddress ip) {}
+    int begin() { return 1; } // Success
     int maintain() { return 0; }
-    IPAddress localIP() { return IPAddress(0,0,0,0); }
+    IPAddress localIP() { return IPAddress(192,168,1,177); }
+    EthernetLinkStatus linkStatus() { return LinkON; }
 };
 
 class EthernetClient : public Client {

@@ -102,6 +102,18 @@ struct IPAddress {
     IPAddress(uint8_t b1, uint8_t b2, uint8_t b3, uint8_t b4) {
         bytes[0]=b1; bytes[1]=b2; bytes[2]=b3; bytes[3]=b4;
     }
+    bool operator!=(const IPAddress& other) const {
+        return bytes[0] != other.bytes[0] || bytes[1] != other.bytes[1] ||
+               bytes[2] != other.bytes[2] || bytes[3] != other.bytes[3];
+    }
+    bool operator==(const IPAddress& other) const {
+        return !(*this != other);
+    }
+    String toString() const {
+        char buf[16];
+        snprintf(buf, sizeof(buf), "%d.%d.%d.%d", bytes[0], bytes[1], bytes[2], bytes[3]);
+        return String(buf);
+    }
 };
 
 // Serial Mock
@@ -117,6 +129,11 @@ public:
     void print(int n)
     {
         printf("%d", n);
+        fflush(stdout);
+    }
+    void print(long n)
+    {
+        printf("%ld", n);
         fflush(stdout);
     }
     void print(unsigned long n, uint8_t base = 10)
