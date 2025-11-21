@@ -4,7 +4,7 @@
 #include <Arduino.h>
 #include "stm32h7xx_hal.h"
 #include <Arduino_UnifiedStorage.h>
-#include "lzss.h"
+#include "Services/Ota/Lzss.h"
 
 // Arduino Portenta Bootloader OTA Implementation
 // Uses the same method as Arduino_Portenta_OTA library:

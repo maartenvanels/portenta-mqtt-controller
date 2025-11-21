@@ -2,7 +2,7 @@
    INCLUDE
  **************************************************************************************/
 
-#include "lzss.h"
+#include "Services/Ota/Lzss.h"
 
 #include <stdlib.h>
 
