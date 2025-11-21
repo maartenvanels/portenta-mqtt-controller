@@ -38,6 +38,9 @@ jobs:
         python -m pip install --upgrade pip
         pip install platformio
 
+    - name: Create Credentials File
+      run: cp include/Core/credentials.h.example include/Core/credentials.h
+
     - name: Build Firmware
       run: pio run -e portenta_h7_m7
 
