@@ -1,5 +1,6 @@
 #include <unity.h>
 #define private public
+#include <cstdio>
 #include "Core/SystemDiagnostics.h"
 #include <stdio.h>
 

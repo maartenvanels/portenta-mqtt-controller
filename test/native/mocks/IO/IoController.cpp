@@ -9,8 +9,8 @@ IoController& IoController::getInstance() {
 
 std::vector<uint16_t> IoController::getAllPinNumbers() const {
     std::vector<uint16_t> keys;
-    for(auto const& [key, val] : mockPins_) {
-        keys.push_back(key);
+    for(auto const& pair : mockPins_) {
+        keys.push_back(pair.first);
     }
     return keys;
 }
