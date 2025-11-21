@@ -92,6 +92,18 @@ inline long map(long x, long in_min, long in_max, long out_min, long out_max)
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
+// Constants for Serial formatting
+const uint8_t HEX = 16;
+
+// IPAddress Mock (needed by SerialMock)
+struct IPAddress {
+    uint8_t bytes[4];
+    IPAddress() { bytes[0]=0; bytes[1]=0; bytes[2]=0; bytes[3]=0; }
+    IPAddress(uint8_t b1, uint8_t b2, uint8_t b3, uint8_t b4) {
+        bytes[0]=b1; bytes[1]=b2; bytes[2]=b3; bytes[3]=b4;
+    }
+};
+
 // Serial Mock
 class SerialMock
 {
@@ -153,15 +165,6 @@ public:
 };
 extern SerialMock Serial;
 
-// IPAddress Mock
-struct IPAddress {
-    uint8_t bytes[4];
-    IPAddress() { bytes[0]=0; bytes[1]=0; bytes[2]=0; bytes[3]=0; }
-    IPAddress(uint8_t b1, uint8_t b2, uint8_t b3, uint8_t b4) {
-        bytes[0]=b1; bytes[1]=b2; bytes[2]=b3; bytes[3]=b4;
-    }
-};
-
 // Stream Mock
 class Stream {
 public:
@@ -171,9 +174,6 @@ public:
     virtual void flush() = 0;
     virtual size_t write(uint8_t) = 0;
 };
-
-// Constants
-const uint8_t HEX = 16;
 
 // HAL Mocks
 typedef struct {
