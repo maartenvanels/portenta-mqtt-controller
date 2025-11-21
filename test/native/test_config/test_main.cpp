@@ -1,18 +1,3 @@
-#include <unity.h>
-#include "ConfigManager.h"
-#include "Arduino.h"
-
-SerialMock Serial;
-
-void setUp(void)
-{
-    // Set up before each test
-}
-
-void tearDown(void)
-{
-    // Clean up after each test
-}
 
 void test_load_default_config()
 {
