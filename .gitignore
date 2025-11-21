@@ -30,3 +30,6 @@ test_output*.txt
 
 # Exclude example folder
 example/
+
+# AI Config
+.claude/
