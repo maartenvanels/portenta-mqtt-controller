@@ -2,10 +2,6 @@
 #include "Arduino.h"
 #include "Client.h"
 
-#pragma once
-#include "Arduino.h"
-#include "Client.h"
-
 // WiFi status constants
 #define WL_CONNECTED 3
 #define WL_DISCONNECTED 6
