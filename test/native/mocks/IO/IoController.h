@@ -1,6 +1,7 @@
 #pragma once
 #include "IO/IPinHandler.h"
 #include <vector>
+#include <map>
 #include <ArduinoJson.h>
 
 namespace IO {
