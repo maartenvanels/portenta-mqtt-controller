@@ -6,6 +6,8 @@
 #include <cstring>
 #include <math.h>
 #include <stdlib.h>
+#include <iostream>
+#include <type_traits>
 
 // Basic types
 using std::string;
@@ -136,74 +138,76 @@ class SerialMock
 {
 public:
     void begin(unsigned long baud) {}
+
     void print(const char *s)
     {
-        printf("%s", s);
-        fflush(stdout);
+        std::cout << s;
     }
-    void print(int n)
+
+    void print(const String &s)
     {
-        printf("%d", n);
-        fflush(stdout);
+        std::cout << s;
     }
-    void print(long n)
+
+    void print(IPAddress ip)
     {
-        printf("%ld", n);
-        fflush(stdout);
+        std::cout << (int)ip.bytes[0] << "." << (int)ip.bytes[1] << "."
+                  << (int)ip.bytes[2] << "." << (int)ip.bytes[3];
     }
-    void print(unsigned long n, uint8_t base = 10)
-    {
-        if (base == HEX)
-        {
-            printf("%lx", n);
-        }
-        else
-        {
-            printf("%lu", n);
-        }
-        fflush(stdout);
-    }
-    void print(uint32_t n, uint8_t base = 10)
+
+    // Template for all numeric types to avoid ambiguity
+    template <typename T>
+    typename std::enable_if<std::is_arithmetic<T>::value>::type
+    print(T n, int base = 10)
     {
         if (base == HEX)
         {
-            printf("%x", n);
+            // Check if T is floating point
+            if (std::is_floating_point<T>::value)
+            {
+                std::cout << n; // Hex doesn't apply to floats generally in Arduino print
+            }
+            else
+            {
+                std::cout << std::hex << (unsigned long long)n << std::dec;
+            }
         }
         else
         {
-            printf("%u", n);
+            std::cout << n;
         }
-        fflush(stdout);
     }
-    void print(size_t n)
-    {
-        printf("%zu", n);
-        fflush(stdout);
-    }
+
+    // println overloads that just call print + newline
     void println(const char *s)
     {
-        printf("%s\n", s);
-        fflush(stdout);
+        print(s);
+        std::cout << std::endl;
     }
+
     void println(const String &s)
     {
-        printf("%s\n", s.c_str());
-        fflush(stdout);
+        print(s);
+        std::cout << std::endl;
     }
-    void println(int n)
-    {
-        printf("%d\n", n);
-        fflush(stdout);
-    }
+
     void println(IPAddress ip)
     {
-        printf("%d.%d.%d.%d\n", ip.bytes[0], ip.bytes[1], ip.bytes[2], ip.bytes[3]);
-        fflush(stdout);
+        print(ip);
+        std::cout << std::endl;
     }
+
     void println()
     {
-        printf("\n");
-        fflush(stdout);
+        std::cout << std::endl;
+    }
+
+    template <typename T>
+    typename std::enable_if<std::is_arithmetic<T>::value>::type
+    println(T n, int base = 10)
+    {
+        print(n, base);
+        std::cout << std::endl;
     }
 };
 extern SerialMock Serial;
