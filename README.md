@@ -1,6 +1,6 @@
 # Arduino Portenta MQTT Controller
 
-![Build Status](https://github.com/username/portenta-mqtt-controller/actions/workflows/build.yml/badge.svg)
+[![Build Status](https://github.com/maartenvanels/maartenvanels-portenta-mqtt-controller/actions/workflows/build.yml/badge.svg)](https://github.com/maartenvanels/maartenvanels-portenta-mqtt-controller/actions/workflows/build.yml)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 ![PlatformIO](https://img.shields.io/badge/PlatformIO-Framework-orange)
 ![Language](https://img.shields.io/badge/Language-C%2B%2B-blue)
