@@ -19,7 +19,8 @@ public:
     String(const char *s) : std::string(s) {}
     String(const std::string &s) : std::string(s) {}
     String(int i) : std::string(std::to_string(i)) {}
-    String(float f, int decimals) {
+    String(float f, int decimals)
+    {
         char buf[32];
         snprintf(buf, sizeof(buf), "%.*f", decimals, f);
         assign(buf);
@@ -96,20 +97,34 @@ inline long map(long x, long in_min, long in_max, long out_min, long out_max)
 const uint8_t HEX = 16;
 
 // IPAddress Mock (needed by SerialMock)
-struct IPAddress {
+struct IPAddress
+{
     uint8_t bytes[4];
-    IPAddress() { bytes[0]=0; bytes[1]=0; bytes[2]=0; bytes[3]=0; }
-    IPAddress(uint8_t b1, uint8_t b2, uint8_t b3, uint8_t b4) {
-        bytes[0]=b1; bytes[1]=b2; bytes[2]=b3; bytes[3]=b4;
+    IPAddress()
+    {
+        bytes[0] = 0;
+        bytes[1] = 0;
+        bytes[2] = 0;
+        bytes[3] = 0;
     }
-    bool operator!=(const IPAddress& other) const {
+    IPAddress(uint8_t b1, uint8_t b2, uint8_t b3, uint8_t b4)
+    {
+        bytes[0] = b1;
+        bytes[1] = b2;
+        bytes[2] = b3;
+        bytes[3] = b4;
+    }
+    bool operator!=(const IPAddress &other) const
+    {
         return bytes[0] != other.bytes[0] || bytes[1] != other.bytes[1] ||
                bytes[2] != other.bytes[2] || bytes[3] != other.bytes[3];
     }
-    bool operator==(const IPAddress& other) const {
+    bool operator==(const IPAddress &other) const
+    {
         return !(*this != other);
     }
-    String toString() const {
+    String toString() const
+    {
         char buf[16];
         snprintf(buf, sizeof(buf), "%d.%d.%d.%d", bytes[0], bytes[1], bytes[2], bytes[3]);
         return String(buf);
@@ -138,20 +153,31 @@ public:
     }
     void print(unsigned long n, uint8_t base = 10)
     {
-        if (base == HEX) {
+        if (base == HEX)
+        {
             printf("%lx", n);
-        } else {
+        }
+        else
+        {
             printf("%lu", n);
         }
         fflush(stdout);
     }
     void print(uint32_t n, uint8_t base = 10)
     {
-        if (base == HEX) {
+        if (base == HEX)
+        {
             printf("%x", n);
-        } else {
+        }
+        else
+        {
             printf("%u", n);
         }
+        fflush(stdout);
+    }
+    void print(size_t n)
+    {
+        printf("%zu", n);
         fflush(stdout);
     }
     void println(const char *s)
@@ -183,7 +209,8 @@ public:
 extern SerialMock Serial;
 
 // Stream Mock
-class Stream {
+class Stream
+{
 public:
     virtual int available() = 0;
     virtual int read() = 0;
@@ -193,7 +220,8 @@ public:
 };
 
 // HAL Mocks
-typedef struct {
+typedef struct
+{
     uint32_t Instance;
 } RTC_HandleTypeDef;
 
@@ -202,8 +230,8 @@ typedef struct {
 #define RTC_BKP_DR2 0x02
 #define RTC_BKP_DR3 0x03
 
-inline uint32_t HAL_RTCEx_BKUPRead(RTC_HandleTypeDef* hrtc, uint32_t BackupRegister) { return 0; }
-inline void HAL_RTCEx_BKUPWrite(RTC_HandleTypeDef* hrtc, uint32_t BackupRegister, uint32_t Data) {}
+inline uint32_t HAL_RTCEx_BKUPRead(RTC_HandleTypeDef *hrtc, uint32_t BackupRegister) { return 0; }
+inline void HAL_RTCEx_BKUPWrite(RTC_HandleTypeDef *hrtc, uint32_t BackupRegister, uint32_t Data) {}
 
 // External RTC handle declaration (defined in Arduino.cpp)
 extern RTC_HandleTypeDef RTCHandle;
