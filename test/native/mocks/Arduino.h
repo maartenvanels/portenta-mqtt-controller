@@ -205,7 +205,7 @@ typedef struct {
 inline uint32_t HAL_RTCEx_BKUPRead(RTC_HandleTypeDef* hrtc, uint32_t BackupRegister) { return 0; }
 inline void HAL_RTCEx_BKUPWrite(RTC_HandleTypeDef* hrtc, uint32_t BackupRegister, uint32_t Data) {}
 
-// External RTC handle definition for tests
-RTC_HandleTypeDef RTCHandle;
+// External RTC handle declaration (defined in Arduino.cpp)
+extern RTC_HandleTypeDef RTCHandle;
 
 #endif
