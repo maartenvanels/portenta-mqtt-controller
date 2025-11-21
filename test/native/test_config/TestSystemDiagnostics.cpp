@@ -46,29 +46,34 @@ void create_invalid_firmware_file() {
 // That's a hack but works for tests.
 
 void test_firmware_validation_valid() {
+    // 1. Arrange
     create_valid_firmware_file();
     
     FILE* f = fopen("update.bin", "rb");
-    TEST_ASSERT_NOT_NULL(f);
+    TEST_ASSERT_NOT_NULL_MESSAGE(f, "Failed to open test firmware file");
     
-    // We need to call the static private method.
-    // Since we are in a test, we can't easily access private.
-    // Let's use the hack.
-    
+    // 2. Act
+    // Validate the firmware format using the private static method (exposed via macro hack)
     bool result = SystemDiagnostics::validateFirmwareFormat(f);
-    TEST_ASSERT_TRUE(result);
+    
+    // 3. Assert
+    TEST_ASSERT_TRUE_MESSAGE(result, "Valid firmware file should return true");
     
     fclose(f);
 }
 
 void test_firmware_validation_invalid() {
+    // 1. Arrange
     create_invalid_firmware_file();
     
     FILE* f = fopen("update.bin", "rb");
-    TEST_ASSERT_NOT_NULL(f);
+    TEST_ASSERT_NOT_NULL_MESSAGE(f, "Failed to open test firmware file");
     
+    // 2. Act
     bool result = SystemDiagnostics::validateFirmwareFormat(f);
-    TEST_ASSERT_FALSE(result);
+    
+    // 3. Assert
+    TEST_ASSERT_FALSE_MESSAGE(result, "Invalid firmware file (bad stack pointer) should return false");
     
     fclose(f);
 }
