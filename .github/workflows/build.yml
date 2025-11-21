@@ -38,5 +38,8 @@ jobs:
         python -m pip install --upgrade pip
         pip install platformio
 
-    - name: Run PlatformIO
-      run: pio run
+    - name: Build Firmware
+      run: pio run -e portenta_h7_m7
+
+    - name: Run Native Tests
+      run: pio test -e native

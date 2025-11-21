@@ -1,4 +1,4 @@
-#include "hardware/MachineControlHAL.h"
+#include "Hardware/MachineControlHAL.h"
 #include <Arduino.h>
 #undef abs
 
