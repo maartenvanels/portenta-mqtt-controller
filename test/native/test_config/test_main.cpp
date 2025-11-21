@@ -33,9 +33,16 @@ void test_load_default_config()
     TEST_ASSERT_EQUAL_STRING("relay_0", pin0.name.c_str());
 }
 
+extern void test_mqtt_publish_pin_state();
+extern void test_firmware_validation_valid();
+extern void test_firmware_validation_invalid();
+
 int main(int argc, char **argv)
 {
     UNITY_BEGIN();
     RUN_TEST(test_load_default_config);
+    RUN_TEST(test_mqtt_publish_pin_state);
+    RUN_TEST(test_firmware_validation_valid);
+    RUN_TEST(test_firmware_validation_invalid);
     return UNITY_END();
 }
