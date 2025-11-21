@@ -144,4 +144,23 @@ public:
     virtual size_t write(uint8_t) = 0;
 };
 
+// Constants
+const uint8_t HEX = 16;
+
+// HAL Mocks
+typedef struct {
+    uint32_t Instance;
+} RTC_HandleTypeDef;
+
+#define RTC_BKP_DR0 0x00
+#define RTC_BKP_DR1 0x01
+#define RTC_BKP_DR2 0x02
+#define RTC_BKP_DR3 0x03
+
+inline uint32_t HAL_RTCEx_BKUPRead(RTC_HandleTypeDef* hrtc, uint32_t BackupRegister) { return 0; }
+inline void HAL_RTCEx_BKUPWrite(RTC_HandleTypeDef* hrtc, uint32_t BackupRegister, uint32_t Data) {}
+
+// External RTC handle definition for tests
+RTC_HandleTypeDef RTCHandle;
+
 #endif
