@@ -19,6 +19,11 @@ public:
     String(const char *s) : std::string(s) {}
     String(const std::string &s) : std::string(s) {}
     String(int i) : std::string(std::to_string(i)) {}
+    String(float f, int decimals) {
+        char buf[32];
+        snprintf(buf, sizeof(buf), "%.*f", decimals, f);
+        assign(buf);
+    }
     String() : std::string("") {}
 
     unsigned char operator[](unsigned int index) const
@@ -102,6 +107,24 @@ public:
         printf("%d", n);
         fflush(stdout);
     }
+    void print(unsigned long n, uint8_t base = 10)
+    {
+        if (base == HEX) {
+            printf("%lx", n);
+        } else {
+            printf("%lu", n);
+        }
+        fflush(stdout);
+    }
+    void print(uint32_t n, uint8_t base = 10)
+    {
+        if (base == HEX) {
+            printf("%x", n);
+        } else {
+            printf("%u", n);
+        }
+        fflush(stdout);
+    }
     void println(const char *s)
     {
         printf("%s\n", s);
@@ -115,6 +138,11 @@ public:
     void println(int n)
     {
         printf("%d\n", n);
+        fflush(stdout);
+    }
+    void println(IPAddress ip)
+    {
+        printf("%d.%d.%d.%d\n", ip.bytes[0], ip.bytes[1], ip.bytes[2], ip.bytes[3]);
         fflush(stdout);
     }
     void println()
