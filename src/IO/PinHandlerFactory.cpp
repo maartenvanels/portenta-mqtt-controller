@@ -1,10 +1,10 @@
-#include "io/PinHandlerFactory.h"
-#include "io/DigitalOutputHandler.h"
-#include "io/DigitalInputHandler.h"
-#include "io/AnalogInputHandler.h"
-#include "io/RTDInputHandler.h"
-#include "io/ProgrammableDIOHandler.h"
-#include "io/AnalogOutputHandler.h"
+#include "IO/PinHandlerFactory.h"
+#include "IO/DigitalOutputHandler.h"
+#include "IO/DigitalInputHandler.h"
+#include "IO/AnalogInputHandler.h"
+#include "IO/RTDInputHandler.h"
+#include "IO/ProgrammableDIOHandler.h"
+#include "IO/AnalogOutputHandler.h"
 
 namespace IO {
 
