@@ -1,3 +1,26 @@
+#include <Arduino.h>
+#include <Core/ConfigManager.h>
+#include <unity.h>
+
+// Mock Config
+struct Config ConfigManager::config_ = {
+    .ssid = "TestSSID",
+    .password = "TestPassword",
+    .mqttBroker = "192.168.1.1",
+    .mqttPort = 1883,
+    .mqttUser = "test",
+    .mqttPassword = "test"
+};
+
+void setUp(void)
+{
+    // Set up before each test
+}
+
+void tearDown(void)
+{
+    // Clean up after each test
+}
 
 void test_load_default_config()
 {
