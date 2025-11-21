@@ -1,0 +1,294 @@
+{
+  "pins": [
+    {
+      "pinNumber": 0,
+      "type": "DIGITAL_OUTPUT",
+      "name": "relay_0",
+      "mqttTopic": "relay0",
+      "mode": "OUTPUT"
+    },
+    {
+      "pinNumber": 1,
+      "type": "DIGITAL_OUTPUT",
+      "name": "relay_1",
+      "mqttTopic": "relay1",
+      "mode": "OUTPUT"
+    },
+    {
+      "pinNumber": 2,
+      "type": "DIGITAL_OUTPUT",
+      "name": "relay_2",
+      "mqttTopic": "relay2",
+      "mode": "OUTPUT"
+    },
+    {
+      "pinNumber": 3,
+      "type": "DIGITAL_OUTPUT",
+      "name": "relay_3",
+      "mqttTopic": "relay3",
+      "mode": "OUTPUT"
+    },
+    {
+      "pinNumber": 4,
+      "type": "DIGITAL_OUTPUT",
+      "name": "relay_4",
+      "mqttTopic": "relay4",
+      "mode": "OUTPUT"
+    },
+    {
+      "pinNumber": 5,
+      "type": "DIGITAL_OUTPUT",
+      "name": "relay_5",
+      "mqttTopic": "relay5",
+      "mode": "OUTPUT"
+    },
+    {
+      "pinNumber": 6,
+      "type": "DIGITAL_OUTPUT",
+      "name": "relay_6",
+      "mqttTopic": "relay6",
+      "mode": "OUTPUT"
+    },
+    {
+      "pinNumber": 7,
+      "type": "DIGITAL_OUTPUT",
+      "name": "relay_7",
+      "mqttTopic": "relay7",
+      "mode": "OUTPUT"
+    },
+    {
+      "pinNumber": 0,
+      "type": "DIGITAL_INPUT",
+      "name": "digital_in_1",
+      "mqttTopic": "digital_in1",
+      "mode": "INPUT",
+      "sampleRateMs": 100
+    },
+    {
+      "pinNumber": 1,
+      "type": "DIGITAL_INPUT",
+      "name": "digital_in_2",
+      "mqttTopic": "digital_in2",
+      "mode": "INPUT",
+      "sampleRateMs": 100
+    },
+    {
+      "pinNumber": 2,
+      "type": "DIGITAL_INPUT",
+      "name": "digital_in_3",
+      "mqttTopic": "digital_in3",
+      "mode": "INPUT",
+      "sampleRateMs": 100
+    },
+    {
+      "pinNumber": 3,
+      "type": "DIGITAL_INPUT",
+      "name": "digital_in_4",
+      "mqttTopic": "digital_in4",
+      "mode": "INPUT",
+      "sampleRateMs": 100
+    },
+    {
+      "pinNumber": 4,
+      "type": "DIGITAL_INPUT",
+      "name": "digital_in_5",
+      "mqttTopic": "digital_in5",
+      "mode": "INPUT",
+      "sampleRateMs": 100
+    },
+    {
+      "pinNumber": 5,
+      "type": "DIGITAL_INPUT",
+      "name": "digital_in_6",
+      "mqttTopic": "digital_in6",
+      "mode": "INPUT",
+      "sampleRateMs": 100
+    },
+    {
+      "pinNumber": 6,
+      "type": "DIGITAL_INPUT",
+      "name": "digital_in_7",
+      "mqttTopic": "digital_in7",
+      "mode": "INPUT",
+      "sampleRateMs": 100
+    },
+    {
+      "pinNumber": 7,
+      "type": "DIGITAL_INPUT",
+      "name": "digital_in_8",
+      "mqttTopic": "digital_in8",
+      "mode": "INPUT",
+      "sampleRateMs": 100
+    },
+    {
+      "pinNumber": 0,
+      "type": "ANALOG_INPUT_VOLTAGE",
+      "name": "analog_voltage_1",
+      "mqttTopic": "analog_in0",
+      "mode": "INPUT",
+      "sampleRateMs": 100,
+      "minValue": 0.0,
+      "maxValue": 10.0,
+      "scaleFactor": 1.0,
+      "offset": 0.0
+    },
+    {
+      "pinNumber": 1,
+      "type": "ANALOG_INPUT_VOLTAGE",
+      "name": "analog_voltage_2",
+      "mqttTopic": "analog_in1",
+      "mode": "INPUT",
+      "sampleRateMs": 100,
+      "minValue": 0.0,
+      "maxValue": 10.0,
+      "scaleFactor": 1.0,
+      "offset": 0.0
+    },
+    {
+      "pinNumber": 2,
+      "type": "ANALOG_INPUT_VOLTAGE",
+      "name": "analog_voltage_3",
+      "mqttTopic": "analog_in2",
+      "mode": "INPUT",
+      "sampleRateMs": 100,
+      "minValue": 0.0,
+      "maxValue": 10.0,
+      "scaleFactor": 1.0,
+      "offset": 0.0
+    },
+    {
+      "pinNumber": 0,
+      "type": "PROGRAMMABLE_DIO",
+      "name": "prog_dio_0",
+      "mqttTopic": "prog_dio_0",
+      "mode": "OUTPUT",
+      "sampleRateMs": 100
+    },
+    {
+      "pinNumber": 1,
+      "type": "PROGRAMMABLE_DIO",
+      "name": "prog_dio_1",
+      "mqttTopic": "prog_dio_1",
+      "mode": "INPUT",
+      "sampleRateMs": 100
+    },
+    {
+      "pinNumber": 2,
+      "type": "PROGRAMMABLE_DIO",
+      "name": "prog_dio_2",
+      "mqttTopic": "prog_dio_2",
+      "mode": "INPUT",
+      "sampleRateMs": 100
+    },
+    {
+      "pinNumber": 3,
+      "type": "PROGRAMMABLE_DIO",
+      "name": "prog_dio_3",
+      "mqttTopic": "prog_dio_3",
+      "mode": "INPUT",
+      "sampleRateMs": 100
+    },
+    {
+      "pinNumber": 4,
+      "type": "PROGRAMMABLE_DIO",
+      "name": "prog_dio_4",
+      "mqttTopic": "prog_dio_4",
+      "mode": "INPUT",
+      "sampleRateMs": 100
+    },
+    {
+      "pinNumber": 5,
+      "type": "PROGRAMMABLE_DIO",
+      "name": "prog_dio_5",
+      "mqttTopic": "prog_dio_5",
+      "mode": "INPUT",
+      "sampleRateMs": 100
+    },
+    {
+      "pinNumber": 6,
+      "type": "PROGRAMMABLE_DIO",
+      "name": "prog_dio_6",
+      "mqttTopic": "prog_dio_6",
+      "mode": "OUTPUT"
+    },
+    {
+      "pinNumber": 7,
+      "type": "PROGRAMMABLE_DIO",
+      "name": "prog_dio_7",
+      "mqttTopic": "prog_dio_7",
+      "mode": "OUTPUT"
+    },
+    {
+      "pinNumber": 8,
+      "type": "PROGRAMMABLE_DIO",
+      "name": "prog_dio_8",
+      "mqttTopic": "prog_dio_8",
+      "mode": "OUTPUT"
+    },
+    {
+      "pinNumber": 9,
+      "type": "PROGRAMMABLE_DIO",
+      "name": "prog_dio_9",
+      "mqttTopic": "prog_dio_9",
+      "mode": "OUTPUT"
+    },
+    {
+      "pinNumber": 10,
+      "type": "PROGRAMMABLE_DIO",
+      "name": "prog_dio_10",
+      "mqttTopic": "prog_dio_10",
+      "mode": "OUTPUT"
+    },
+    {
+      "pinNumber": 11,
+      "type": "PROGRAMMABLE_DIO",
+      "name": "prog_dio_11",
+      "mqttTopic": "prog_dio_11",
+      "mode": "OUTPUT"
+    },
+    {
+      "pinNumber": 0,
+      "type": "ANALOG_OUTPUT_VOLTAGE",
+      "name": "analog_out_0",
+      "mqttTopic": "analog_out0",
+      "mode": "OUTPUT",
+      "minValue": 0.0,
+      "maxValue": 10.0,
+      "scaleFactor": 1.0,
+      "offset": 0.0
+    },
+    {
+      "pinNumber": 1,
+      "type": "ANALOG_OUTPUT_VOLTAGE",
+      "name": "analog_out_1",
+      "mqttTopic": "analog_out1",
+      "mode": "OUTPUT",
+      "minValue": 0.0,
+      "maxValue": 10.0,
+      "scaleFactor": 1.0,
+      "offset": 0.0
+    },
+    {
+      "pinNumber": 2,
+      "type": "ANALOG_OUTPUT_VOLTAGE",
+      "name": "analog_out_2",
+      "mqttTopic": "analog_out2",
+      "mode": "OUTPUT",
+      "minValue": 0.0,
+      "maxValue": 10.0,
+      "scaleFactor": 1.0,
+      "offset": 0.0
+    },
+    {
+      "pinNumber": 3,
+      "type": "ANALOG_OUTPUT_VOLTAGE",
+      "name": "analog_out_3",
+      "mqttTopic": "analog_out3",
+      "mode": "OUTPUT",
+      "minValue": 0.0,
+      "maxValue": 10.0,
+      "scaleFactor": 1.0,
+      "offset": 0.0
+    }
+  ]
+}

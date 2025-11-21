@@ -1,0 +1,13 @@
+{
+  "MqttSettings": {
+    "BrokerAddress": "192.168.18.74",
+    "BrokerPort": 1883,
+    "Username": "your-username",
+    "Password": "your-password",
+    "ClientIdPrefix": "PortentaMqttClient",
+    "ReconnectDelaySeconds": 5,
+    "Topics": [
+      "portenta/digital_in1/state"
+    ]
+  }
+}

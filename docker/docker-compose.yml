@@ -1,0 +1,32 @@
+services:
+  platformio:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: portenta-mqtt-dev:latest
+    container_name: portenta-mqtt-builder
+    volumes:
+      - ../:/workspace
+      - platformio-cache:/home/platformio/.platformio
+    devices:
+      # Allow access to USB devices for uploading
+      - /dev/bus/usb:/dev/bus/usb
+    privileged: true
+    environment:
+      - PLATFORMIO_CORE_DIR=/home/platformio/.platformio
+    command: tail -f /dev/null
+    
+  # Development web server for testing web interface
+  webserver:
+    image: nginx:alpine
+    container_name: portenta-mqtt-webserver
+    ports:
+      - "8080:80"
+    volumes:
+      - ../data/web:/usr/share/nginx/html:ro
+    depends_on:
+      - platformio
+
+volumes:
+  platformio-cache:
+    name: portenta-mqtt-platformio-cache
