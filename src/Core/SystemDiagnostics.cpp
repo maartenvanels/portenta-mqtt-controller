@@ -10,7 +10,13 @@
 extern RTC_HandleTypeDef RTCHandle;
 
 // Bootloader address in flash
+// Bootloader address in flash
+#ifdef UNIT_TEST
+static uint8_t mock_bootloader_memory[0x20000]; // 128KB buffer to cover 0x1F000 offset
+#define BOOTLOADER_ADDR ((uintptr_t)mock_bootloader_memory)
+#else
 #define BOOTLOADER_ADDR 0x8000000
+#endif
 
 // CPU Load breakdown accumulators
 static uint32_t accIO = 0;
