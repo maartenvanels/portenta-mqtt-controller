@@ -6,9 +6,9 @@
 .vscode/ipch
 
 # Credentials - NEVER commit passwords!
-# Credentials - NEVER commit passwords!
 include/credentials.h
 include/Core/credentials.h
+.env
 
 # .NET / Visual Studio
 bin/
