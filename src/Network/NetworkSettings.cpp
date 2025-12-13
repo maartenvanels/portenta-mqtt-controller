@@ -1,20 +1,23 @@
-#include "NetworkSettings.h"
-#include "credentials.h"
+#include "Network/NetworkSettings.h"
+#include "Core/credentials.h"
 #include <Arduino.h>
 #include <ArduinoJson.h>
 #include <Arduino_UnifiedStorage.h>
 
-NetworkSettings& NetworkSettings::getInstance() {
+NetworkSettings &NetworkSettings::getInstance()
+{
     static NetworkSettings instance;
     return instance;
 }
 
-NetworkSettings::NetworkSettings() {
+NetworkSettings::NetworkSettings()
+{
     setDefaults();
     loadSettings();
 }
 
-void NetworkSettings::setDefaults() {
+void NetworkSettings::setDefaults()
+{
     // WiFi defaults from credentials.h
     wifiConfig_.ssid = WIFI_SSID;
     wifiConfig_.password = WIFI_PASSWORD;
@@ -31,14 +34,16 @@ void NetworkSettings::setDefaults() {
 
     // NTP defaults
     ntpConfig_.server = "pool.ntp.org";
-    ntpConfig_.timeOffset = 0; // UTC
+    ntpConfig_.timeOffset = 0;           // UTC
     ntpConfig_.updateInterval = 3600000; // 1 hour
 }
 
-bool NetworkSettings::loadSettings() {
+bool NetworkSettings::loadSettings()
+{
     Serial.println("\n=== Loading Network Settings ===");
 
-    if (!loadFromFlash()) {
+    if (!loadFromFlash())
+    {
         Serial.println("No saved settings found, using defaults");
         return false;
     }
@@ -51,10 +56,12 @@ bool NetworkSettings::loadSettings() {
     return true;
 }
 
-bool NetworkSettings::saveSettings() {
+bool NetworkSettings::saveSettings()
+{
     Serial.println("\n=== Saving Network Settings ===");
 
-    if (!saveToFlash()) {
+    if (!saveToFlash())
+    {
         Serial.println("Failed to save settings");
         return false;
     }
@@ -63,53 +70,61 @@ bool NetworkSettings::saveSettings() {
     return true;
 }
 
-bool NetworkSettings::loadFromJson(const String& json) {
+bool NetworkSettings::loadFromJson(const String &json)
+{
     DynamicJsonDocument doc(2048);
     DeserializationError error = deserializeJson(doc, json);
 
-    if (error) {
+    if (error)
+    {
         Serial.print("JSON parse error: ");
         Serial.println(error.c_str());
         return false;
     }
 
     // Parse WiFi config
-    if (doc.containsKey("wifi")) {
+    if (doc.containsKey("wifi"))
+    {
         JsonObject wifi = doc["wifi"];
         wifiConfig_.ssid = wifi["ssid"] | wifiConfig_.ssid;
-        
+
         String newPass = wifi["password"] | "";
-        if (newPass.length() > 0 && newPass != "********") {
+        if (newPass.length() > 0 && newPass != "********")
+        {
             wifiConfig_.password = newPass;
         }
 
         wifiConfig_.apSsid = wifi["apSsid"] | wifiConfig_.apSsid;
-        
+
         String newApPass = wifi["apPassword"] | "";
-        if (newApPass.length() > 0 && newApPass != "********") {
+        if (newApPass.length() > 0 && newApPass != "********")
+        {
             wifiConfig_.apPassword = newApPass;
         }
-        
+
         wifiConfig_.useAP = wifi["useAP"] | wifiConfig_.useAP;
     }
 
     // Parse MQTT config
-    if (doc.containsKey("mqtt")) {
+    if (doc.containsKey("mqtt"))
+    {
         JsonObject mqtt = doc["mqtt"];
         mqttConfig_.broker = mqtt["broker"] | mqttConfig_.broker;
         mqttConfig_.port = mqtt["port"] | mqttConfig_.port;
         mqttConfig_.username = mqtt["username"] | mqttConfig_.username;
-        
+
         String newMqttPass = mqtt["password"] | "";
-        if (newMqttPass.length() > 0 && newMqttPass != "********") {
+        if (newMqttPass.length() > 0 && newMqttPass != "********")
+        {
             mqttConfig_.password = newMqttPass;
         }
-        
+
         mqttConfig_.clientId = mqtt["clientId"] | mqttConfig_.clientId;
     }
 
     // Parse NTP config
-    if (doc.containsKey("ntp")) {
+    if (doc.containsKey("ntp"))
+    {
         JsonObject ntp = doc["ntp"];
         ntpConfig_.server = ntp["server"] | ntpConfig_.server;
         ntpConfig_.timeOffset = ntp["timeOffset"] | ntpConfig_.timeOffset;
@@ -119,13 +134,14 @@ bool NetworkSettings::loadFromJson(const String& json) {
     return true;
 }
 
-String NetworkSettings::toJson() {
+String NetworkSettings::toJson()
+{
     DynamicJsonDocument doc(2048);
 
     // WiFi config
     JsonObject wifi = doc.createNestedObject("wifi");
     wifi["ssid"] = wifiConfig_.ssid;
-    wifi["password"] = wifiConfig_.password.length() > 0 ? "********" : "";  // Hide password
+    wifi["password"] = wifiConfig_.password.length() > 0 ? "********" : ""; // Hide password
     wifi["apSsid"] = wifiConfig_.apSsid;
     wifi["apPassword"] = wifiConfig_.apPassword.length() > 0 ? "********" : "";
     wifi["useAP"] = wifiConfig_.useAP;
@@ -135,7 +151,7 @@ String NetworkSettings::toJson() {
     mqtt["broker"] = mqttConfig_.broker;
     mqtt["port"] = mqttConfig_.port;
     mqtt["username"] = mqttConfig_.username;
-    mqtt["password"] = mqttConfig_.password.length() > 0 ? "********" : "";  // Hide password
+    mqtt["password"] = mqttConfig_.password.length() > 0 ? "********" : ""; // Hide password
     mqtt["clientId"] = mqttConfig_.clientId;
 
     // NTP config
@@ -149,28 +165,34 @@ String NetworkSettings::toJson() {
     return result;
 }
 
-void NetworkSettings::setWiFiConfig(const WiFiConfig& config) {
+void NetworkSettings::setWiFiConfig(const WiFiConfig &config)
+{
     wifiConfig_ = config;
 }
 
-void NetworkSettings::setMQTTConfig(const MQTTConfig& config) {
+void NetworkSettings::setMQTTConfig(const MQTTConfig &config)
+{
     mqttConfig_ = config;
 }
 
-void NetworkSettings::setNTPConfig(const NTPConfig& config) {
+void NetworkSettings::setNTPConfig(const NTPConfig &config)
+{
     ntpConfig_ = config;
 }
 
-bool NetworkSettings::isConfigured() const {
+bool NetworkSettings::isConfigured() const
+{
     // Settings are configured if WiFi SSID and MQTT broker are not empty
     return !wifiConfig_.ssid.isEmpty() && !mqttConfig_.broker.isEmpty();
 }
 
-bool NetworkSettings::loadFromFlash() {
+bool NetworkSettings::loadFromFlash()
+{
     // Use Partition 4 (User Data) - same as Logger
     InternalStorage storage(3, "user", FS_LITTLEFS);
 
-    if (!storage.begin()) {
+    if (!storage.begin())
+    {
         Serial.println("Cannot access user partition for settings");
         return false;
     }
@@ -179,46 +201,54 @@ bool NetworkSettings::loadFromFlash() {
     auto root = storage.getRootFolder();
     auto file = root.createFile("settings.json", FileMode::READ);
 
-    if (!file.exists()) {
+    if (!file.exists())
+    {
         Serial.println("No settings.json found in flash storage");
         return false;
     }
 
     // Read file content
     size_t fileSize = file.available();
-    if (fileSize == 0 || fileSize > 4096) {
+    if (fileSize == 0 || fileSize > 4096)
+    {
         Serial.println("Invalid settings file size");
         file.close();
         return false;
     }
 
-    uint8_t* buffer = new uint8_t[fileSize + 1];
+    uint8_t *buffer = new uint8_t[fileSize + 1];
     size_t bytesRead = file.read(buffer, fileSize);
     buffer[bytesRead] = '\0';
     file.close();
 
     // Parse JSON
-    bool success = loadFromJson(String((char*)buffer));
+    bool success = loadFromJson(String((char *)buffer));
     delete[] buffer;
 
-    if (success) {
+    if (success)
+    {
         Serial.println("Settings loaded from QSPI flash");
     }
 
     return success;
 }
 
-bool NetworkSettings::saveToFlash() {
+bool NetworkSettings::saveToFlash()
+{
     // Use Partition 4 (User Data)
     InternalStorage storage(3, "user", FS_LITTLEFS);
 
-    if (!storage.begin()) {
+    if (!storage.begin())
+    {
         Serial.println("Cannot access user partition for settings");
 
         // Try to format if needed
-        if (storage.format(FS_LITTLEFS) && storage.begin()) {
+        if (storage.format(FS_LITTLEFS) && storage.begin())
+        {
             Serial.println("User partition formatted successfully");
-        } else {
+        }
+        else
+        {
             return false;
         }
     }
@@ -230,18 +260,22 @@ bool NetworkSettings::saveToFlash() {
     auto root = storage.getRootFolder();
     auto file = root.createFile("settings.json", FileMode::WRITE);
 
-    if (!file.exists()) {
+    if (!file.exists())
+    {
         Serial.println("Failed to create settings.json");
         return false;
     }
 
-    size_t bytesWritten = file.write((const uint8_t*)json.c_str(), json.length());
+    size_t bytesWritten = file.write((const uint8_t *)json.c_str(), json.length());
     file.close();
 
-    if (bytesWritten == json.length()) {
+    if (bytesWritten == json.length())
+    {
         Serial.println("Settings saved to QSPI flash");
         return true;
-    } else {
+    }
+    else
+    {
         Serial.println("Failed to write all settings data");
         return false;
     }

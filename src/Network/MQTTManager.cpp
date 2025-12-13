@@ -1,8 +1,8 @@
-#include "MQTTManager.h"
-#include "NetworkSettings.h"
-#include "NetworkManager.h"
-#include "credentials.h"
-#include "Logger.h"
+#include "Network/MQTTManager.h"
+#include "Network/NetworkSettings.h"
+#include "Network/NetworkManager.h"
+#include "Core/credentials.h"
+#include "Core/Logger.h"
 #include "IO/IoController.h"
 #include "Services/HomeAssistant/HomeAssistantDiscovery.h"
 #include <ArduinoJson.h>

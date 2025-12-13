@@ -5,7 +5,7 @@
 #include <NTPClient.h>
 #include <WiFiUdp.h>
 #include <EthernetUdp.h>
-#include "NetworkManager.h"
+#include "Network/NetworkManager.h"
 
 /**
  * @brief Manages RTC synchronization using NTP
@@ -55,6 +55,10 @@ private:
     TimeManager(const TimeManager &) = delete;
     TimeManager &operator=(const TimeManager &) = delete;
 
+    // NOTE: arduino::UDP has a non-virtual destructor, so never delete via UDP*.
+    // We keep concrete UDP implementations as members and point udp_ at the active one.
+    WiFiUDP wifiUdp_;
+    EthernetUDP ethernetUdp_;
     UDP *udp_;
     NTPClient *ntpClient_;
     bool isSynchronized_;

@@ -1,6 +1,6 @@
-#include "TimeManager.h"
-#include "NetworkSettings.h"
-#include "Logger.h"
+#include "Core/TimeManager.h"
+#include "Network/NetworkSettings.h"
+#include "Core/Logger.h"
 #include <time.h>
 
 // Ensure set_time is available
@@ -46,33 +46,29 @@ void TimeManager::begin()
         delete ntpClient_;
         ntpClient_ = nullptr;
     }
-    if (udp_)
-    {
-        delete udp_;
-        udp_ = nullptr;
-    }
 
     // Create appropriate UDP instance
     if (currentType == NetworkManager::ConnectionType::ETHERNET)
     {
         Serial.println("TimeManager: Initializing for Ethernet");
-        udp_ = new EthernetUDP();
+        udp_ = &ethernetUdp_;
     }
     else if (currentType == NetworkManager::ConnectionType::WIFI)
     {
         Serial.println("TimeManager: Initializing for WiFi");
-        udp_ = new WiFiUDP();
+        udp_ = &wifiUdp_;
     }
     else
     {
         LOG_ERROR("TimeManager: Unknown connection type");
+        udp_ = nullptr;
         return;
     }
 
     // Initialize NTP Client
-    const auto& ntpConfig = NetworkSettings::getInstance().getNTPConfig();
+    const auto &ntpConfig = NetworkSettings::getInstance().getNTPConfig();
     currentNtpServer_ = ntpConfig.server;
-    
+
     // Update interval: 60 seconds for initial sync, can be increased later
     ntpClient_ = new NTPClient(*udp_, currentNtpServer_.c_str(), ntpConfig.timeOffset, 60000);
     ntpClient_->begin();
@@ -131,7 +127,7 @@ void TimeManager::update()
             LOG_INFO("Time synchronized: " + getFormattedTime());
 
             // After first sync, we can reduce update frequency to configured interval
-            const auto& ntpConfig = NetworkSettings::getInstance().getNTPConfig();
+            const auto &ntpConfig = NetworkSettings::getInstance().getNTPConfig();
             ntpClient_->setUpdateInterval(ntpConfig.updateInterval);
         }
         else

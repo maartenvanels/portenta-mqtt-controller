@@ -1,12 +1,12 @@
-#include "WebServer.h"
+#include "Network/WebServer.h"
 #include "Network/WebAssets.h"
-#include "credentials.h"
-#include "NetworkSettings.h"
-#include "NetworkManager.h"
-#include "TimeManager.h"
-#include "OTAUpdate.h"
-#include "Logger.h"
-#include "SystemDiagnostics.h"
+#include "Core/credentials.h"
+#include "Network/NetworkSettings.h"
+#include "Network/NetworkManager.h"
+#include "Core/TimeManager.h"
+#include "Services/Ota/OTAUpdate.h"
+#include "Core/Logger.h"
+#include "Core/SystemDiagnostics.h"
 #include <ArduinoJson.h>
 #include <mbed_stats.h>
 

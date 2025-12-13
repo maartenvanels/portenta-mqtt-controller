@@ -1,4 +1,4 @@
-#include "SystemDiagnostics.h"
+#include "Core/SystemDiagnostics.h"
 #include <BlockDevice.h>
 #include <MBRBlockDevice.h>
 #include <FATFileSystem.h>

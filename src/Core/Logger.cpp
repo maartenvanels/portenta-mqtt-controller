@@ -169,7 +169,6 @@ namespace Logging
 
                 file.close();
 
-                size_t count = logBuffer_.size();
                 logBuffer_.clear();
                 lastFlush_ = millis();
             }
