@@ -13,29 +13,40 @@ TimeManager &TimeManager::getInstance()
 }
 
 TimeManager::TimeManager()
-    : udp_(nullptr),
+    : connectionHandler_(nullptr),
+      lastInterface_(NetworkAdapter::NONE),
+      udp_(nullptr),
       ntpClient_(nullptr),
       isSynchronized_(false),
       lastSyncTime_(0),
-      initTime_(0),
-      lastConnectionType_(NetworkManager::ConnectionType::NONE)
+      initTime_(0)
 {
+}
+
+void TimeManager::setConnectionHandler(ConnectionHandler *handler)
+{
+    connectionHandler_ = handler;
 }
 
 void TimeManager::begin()
 {
-    NetworkManager &netManager = NetworkManager::getInstance();
+    if (!connectionHandler_)
+    {
+        LOG_WARNING("Cannot start TimeManager: ConnectionHandler not set");
+        return;
+    }
 
-    if (!netManager.isConnected())
+    // Ensure the connection state machine runs and is connected
+    if (connectionHandler_->check() != NetworkConnectionState::CONNECTED)
     {
         LOG_WARNING("Cannot start TimeManager: Network not connected");
         return;
     }
 
-    NetworkManager::ConnectionType currentType = netManager.getConnectionType();
+    const NetworkAdapter currentInterface = connectionHandler_->getInterface();
 
-    // If we are already initialized and connection type hasn't changed, do nothing
-    if (udp_ != nullptr && currentType == lastConnectionType_)
+    // If we are already initialized and interface hasn't changed, do nothing
+    if (ntpClient_ != nullptr && currentInterface == lastInterface_)
     {
         return;
     }
@@ -47,23 +58,15 @@ void TimeManager::begin()
         ntpClient_ = nullptr;
     }
 
-    // Create appropriate UDP instance
-    if (currentType == NetworkManager::ConnectionType::ETHERNET)
-    {
-        Serial.println("TimeManager: Initializing for Ethernet");
-        udp_ = &ethernetUdp_;
-    }
-    else if (currentType == NetworkManager::ConnectionType::WIFI)
-    {
-        Serial.println("TimeManager: Initializing for WiFi");
-        udp_ = &wifiUdp_;
-    }
-    else
-    {
-        LOG_ERROR("TimeManager: Unknown connection type");
-        udp_ = nullptr;
-        return;
-    }
+    // Use UDP provided by the ConnectionHandler (owned by it).
+    // Some adapters (e.g., LoRa/Notecard) do not expose UDP/Client.
+#if defined(BOARD_HAS_LORA) || defined(BOARD_HAS_NOTECARD)
+    LOG_WARNING("TimeManager: UDP not available on this adapter");
+    udp_ = nullptr;
+    return;
+#else
+    udp_ = &connectionHandler_->getUDP();
+#endif
 
     // Initialize NTP Client
     const auto &ntpConfig = NetworkSettings::getInstance().getNTPConfig();
@@ -73,9 +76,16 @@ void TimeManager::begin()
     ntpClient_ = new NTPClient(*udp_, currentNtpServer_.c_str(), ntpConfig.timeOffset, 60000);
     ntpClient_->begin();
 
-    lastConnectionType_ = currentType;
+    lastInterface_ = currentInterface;
     initTime_ = millis();
-    LOG_INFO("TimeManager initialized using " + String(currentType == NetworkManager::ConnectionType::ETHERNET ? "Ethernet" : "WiFi"));
+
+    const char *ifaceStr = "unknown";
+    if (currentInterface == NetworkAdapter::ETHERNET)
+        ifaceStr = "ethernet";
+    else if (currentInterface == NetworkAdapter::WIFI)
+        ifaceStr = "wifi";
+
+    LOG_INFO("TimeManager initialized using " + String(ifaceStr));
 
     // Check if RTC is already valid (e.g. battery backup)
     time_t now = time(NULL);
@@ -93,19 +103,21 @@ void TimeManager::update()
     if (!ntpClient_)
         return;
 
-    // Check if network is still connected
-    NetworkManager &netManager = NetworkManager::getInstance();
-    if (!netManager.isConnected())
+    if (!connectionHandler_)
+        return;
+
+    // Keep connection workflow running; only sync when connected
+    if (connectionHandler_->check() != NetworkConnectionState::CONNECTED)
         return;
 
     // Wait for network stack to stabilize
     if (millis() - initTime_ < 3000)
         return;
 
-    // Check if connection type changed
-    if (netManager.getConnectionType() != lastConnectionType_)
+    // Check if interface changed
+    if (connectionHandler_->getInterface() != lastInterface_)
     {
-        LOG_INFO("Network connection type changed, re-initializing TimeManager");
+        LOG_INFO("Network interface changed, re-initializing TimeManager");
         begin();
         return;
     }

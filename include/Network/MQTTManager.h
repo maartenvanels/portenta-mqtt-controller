@@ -6,6 +6,8 @@
 #include <functional>
 #include <string>
 
+class ConnectionHandler;
+
 // Forward declarations
 namespace IO {
     class IoController;
@@ -45,10 +47,11 @@ public:
 
     /**
      * @brief Connect to MQTT broker
+     * @param connectionHandler Arduino ConnectionHandler providing the active Client
      * @param ioController IoController instance for Home Assistant discovery
      * @return true if connected, false otherwise
      */
-    bool connect(IO::IoController& ioController);
+    bool connect(ConnectionHandler& connectionHandler, IO::IoController& ioController);
 
     /**
      * @brief Check if connected to MQTT broker

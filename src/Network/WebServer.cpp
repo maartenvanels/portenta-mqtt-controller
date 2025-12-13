@@ -2,11 +2,11 @@
 #include "Network/WebAssets.h"
 #include "Core/credentials.h"
 #include "Network/NetworkSettings.h"
-#include "Network/NetworkManager.h"
 #include "Core/TimeManager.h"
 #include "Services/Ota/OTAUpdate.h"
 #include "Core/Logger.h"
 #include "Core/SystemDiagnostics.h"
+#include <Arduino_ConnectionHandler.h>
 #include <ArduinoJson.h>
 #include <mbed_stats.h>
 
@@ -55,8 +55,18 @@ namespace Web
 
         Serial.println("Web interface ready!");
         Serial.print("Access at: http://");
-        NetworkManager &networkManager = NetworkManager::getInstance();
-        Serial.print(networkManager.getIPAddress());
+        if (!connectionHandler_)
+        {
+            Serial.print("0.0.0.0");
+        }
+        else
+        {
+#ifdef USE_ETHERNET
+            Serial.print(Ethernet.localIP());
+#else
+            Serial.print(WiFi.localIP());
+#endif
+        }
         Serial.println("/");
 
         return true;
@@ -511,24 +521,30 @@ namespace Web
         cpuDetail["web"] = cpuStats.webLoad;
         cpuDetail["total"] = cpuStats.totalLoad;
 
-        NetworkManager &nm = NetworkManager::getInstance();
-        NetworkManager::ConnectionType type = nm.getConnectionType();
-
-        if (type == NetworkManager::ConnectionType::ETHERNET)
-        {
-            doc["network"] = "ethernet";
-            doc["ip"] = nm.getIPAddress().toString();
-        }
-        else if (type == NetworkManager::ConnectionType::WIFI)
-        {
-            doc["network"] = "wifi";
-            doc["rssi"] = WiFi.RSSI();
-            doc["ip"] = nm.getIPAddress().toString();
-        }
-        else
+        // Network status based on Arduino ConnectionHandler (no custom connect logic here)
+        if (!connectionHandler_ || connectionHandler_->check() != NetworkConnectionState::CONNECTED)
         {
             doc["network"] = "disconnected";
             doc["ip"] = "0.0.0.0";
+        }
+        else if (connectionHandler_->getInterface() == NetworkAdapter::ETHERNET)
+        {
+            doc["network"] = "ethernet";
+#ifdef USE_ETHERNET
+            doc["ip"] = Ethernet.localIP().toString();
+#else
+            doc["ip"] = "0.0.0.0";
+#endif
+        }
+        else
+        {
+            doc["network"] = "wifi";
+#ifndef USE_ETHERNET
+            doc["rssi"] = WiFi.RSSI();
+            doc["ip"] = WiFi.localIP().toString();
+#else
+            doc["ip"] = "0.0.0.0";
+#endif
         }
 
         doc["mqttConnected"] = mqttConnected_;

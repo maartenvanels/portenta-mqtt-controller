@@ -1,16 +1,17 @@
 #include "Network/MQTTManager.h"
 #include "Network/NetworkSettings.h"
-#include "Network/NetworkManager.h"
 #include "Core/credentials.h"
 #include "Core/Logger.h"
 #include "IO/IoController.h"
 #include "Services/HomeAssistant/HomeAssistantDiscovery.h"
+#include <Arduino_ConnectionHandler.h>
 #include <ArduinoJson.h>
 
-#ifdef USE_ETHERNET
-#include <Ethernet.h>
-#else
-#include <WiFi.h>
+#if defined(BOARD_HAS_ETHERNET)
+  #include <Ethernet.h>
+#endif
+#if defined(BOARD_HAS_WIFI)
+  #include <WiFi.h>
 #endif
 
 // Static instance pointer for callback wrapper
@@ -34,7 +35,7 @@ void MQTTManager::initialize(PubSubClient &client)
     mqttClient_->setCallback(messageCallbackWrapper);
 }
 
-bool MQTTManager::connect(IO::IoController &ioController)
+bool MQTTManager::connect(ConnectionHandler &connectionHandler, IO::IoController &ioController)
 {
     if (!mqttClient_)
     {
@@ -71,18 +72,37 @@ bool MQTTManager::connect(IO::IoController &ioController)
     Serial.println(clientId);
 
     // Verify network connection before MQTT attempt
-    NetworkManager &networkManager = NetworkManager::getInstance();
-    if (!networkManager.isConnected())
+    if (connectionHandler.check() != NetworkConnectionState::CONNECTED)
     {
         Serial.println("ERROR: No network connection! Cannot connect to MQTT.");
         return false;
     }
 
-    // Update the network client in PubSubClient (Ethernet vs WiFi)
-    mqttClient_->setClient(networkManager.getClient());
+    // Update the network client in PubSubClient (provided by Arduino ConnectionHandler)
+#if defined(BOARD_HAS_LORA) || defined(BOARD_HAS_NOTECARD)
+    Serial.println("ERROR: MQTT requires a TCP Client; current adapter does not provide Client()");
+    return false;
+#else
+    mqttClient_->setClient(connectionHandler.getClient());
+#endif
 
     Serial.print("IP address: ");
-    Serial.println(networkManager.getIPAddress());
+    if (connectionHandler.getInterface() == NetworkAdapter::ETHERNET)
+    {
+#if defined(BOARD_HAS_ETHERNET)
+        Serial.println(Ethernet.localIP());
+#else
+        Serial.println("0.0.0.0");
+#endif
+    }
+    else
+    {
+#if defined(BOARD_HAS_WIFI)
+        Serial.println(WiFi.localIP());
+#else
+        Serial.println("0.0.0.0");
+#endif
+    }
 
     // Build LWT topic for Home Assistant availability
     char lwtTopic[128];
@@ -144,9 +164,6 @@ bool MQTTManager::connect(IO::IoController &ioController)
             LOG_ERROR("MQTT connection lost, rc=" + String(mqttClient_->state()));
             lastConnectedState_ = false;
         }
-
-        Serial.print("Network status: ");
-        Serial.println(networkManager.isConnected() ? "CONNECTED" : "DISCONNECTED");
 
         return false;
     }
@@ -249,7 +266,9 @@ void MQTTManager::publishSystemStatus()
     // Ethernet doesn't have RSSI
 #else
     status["network"] = "wifi";
+#if defined(BOARD_HAS_WIFI)
     status["rssi"] = WiFi.RSSI();
+#endif
 #endif
     status["ioHealth"] = ioController.isHealthy();
 

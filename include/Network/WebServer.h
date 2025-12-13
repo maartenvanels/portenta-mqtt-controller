@@ -16,6 +16,8 @@
 #include "IO/IoController.h"
 #include "Core/ConfigManager.h"
 
+class ConnectionHandler;
+
 namespace Web {
 
 // Session management
@@ -34,9 +36,10 @@ public:
 
     void setIoController(IO::IoController* controller) { ioController_ = controller; }
     void setMqttConnected(bool connected) { mqttConnected_ = connected; }
+    void setConnectionHandler(ConnectionHandler* handler) { connectionHandler_ = handler; }
 
 private:
-    WebServer() : server_(nullptr), loginAttempts_(0), lastLoginAttemptTime_(0), mqttConnected_(false), ioController_(nullptr) {}
+    WebServer() : server_(nullptr), loginAttempts_(0), lastLoginAttemptTime_(0), mqttConnected_(false), ioController_(nullptr), connectionHandler_(nullptr) {}
     ~WebServer() { if (server_) delete server_; }
 
     // Prevent copying
@@ -91,6 +94,7 @@ private:
 
     bool mqttConnected_;
     IO::IoController* ioController_;
+    ConnectionHandler* connectionHandler_;
 };
 
 } // namespace Web

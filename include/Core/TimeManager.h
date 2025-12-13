@@ -2,10 +2,9 @@
 #define TIME_MANAGER_H
 
 #include <Arduino.h>
+#include <Arduino_ConnectionHandler.h>
 #include <NTPClient.h>
-#include <WiFiUdp.h>
-#include <EthernetUdp.h>
-#include "Network/NetworkManager.h"
+#include <Udp.h>
 
 /**
  * @brief Manages RTC synchronization using NTP
@@ -22,8 +21,14 @@ public:
     static TimeManager &getInstance();
 
     /**
+     * @brief Provide the Arduino ConnectionHandler used by the application.
+     * TimeManager never manages the network itself; it only reads time via NTP when connected.
+     */
+    void setConnectionHandler(ConnectionHandler *handler);
+
+    /**
      * @brief Initialize NTP client
-     * Call this after NetworkManager is connected
+     * Call this after the ConnectionHandler is configured (and typically after it connected).
      */
     void begin();
 
@@ -55,16 +60,13 @@ private:
     TimeManager(const TimeManager &) = delete;
     TimeManager &operator=(const TimeManager &) = delete;
 
-    // NOTE: arduino::UDP has a non-virtual destructor, so never delete via UDP*.
-    // We keep concrete UDP implementations as members and point udp_ at the active one.
-    WiFiUDP wifiUdp_;
-    EthernetUDP ethernetUdp_;
-    UDP *udp_;
+    ConnectionHandler *connectionHandler_;
+    NetworkAdapter lastInterface_;
+    UDP *udp_; // Owned by ConnectionHandler; never delete.
     NTPClient *ntpClient_;
     bool isSynchronized_;
     unsigned long lastSyncTime_;
     unsigned long initTime_;
-    NetworkManager::ConnectionType lastConnectionType_;
     String currentNtpServer_;
 };
 
